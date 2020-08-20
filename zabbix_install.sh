@@ -1,6 +1,19 @@
 #!/usr/bin/env bash
 
-Install_Zabbix(){
+
+# docker 安装（阿里源）
+Docker-ce_Install_Aliyun(){
+	echo "1、docker所依赖的包环境" && yum install -y yum-utils device-mapper-persistent-data lvm2
+	echo "2、Docker-ce 阿里源镜像" && yum-config-manager --add-repo http://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo
+	echo "3、更新一下yum软件包" && yum makecache fast
+	echo "4、安装docke-ce(默认安装最新版)" && yum -y install docker-ce
+	echo "5、启动docker并设置开机启动" && systemctl enable --now docker.service
+	echo "6、添加阿里云docker镜像加速" && echo '{ "registry-mirrors": ["https://l3rxe7k8.mirror.aliyuncs.com"] }' > /etc/docker/daemon.json
+	echo "7、查看docker版本" && docker version
+}
+
+# yum 安装 Zabbix Server
+Zabbix_Server_Install_Yum(){
 	echo -e "z-1，安装 zabbix 镜像源......"
 	rpm -Uvh https://mirrors.aliyun.com/zabbix/zabbix/5.0/rhel/7/x86_64/zabbix-release-5.0-1.el7.noarch.rpm
 
@@ -23,65 +36,7 @@ Install_Zabbix(){
 	yum install zabbix-web-mysql-scl zabbix-apache-conf-scl -y
 }
 
-Install_MariaDB(){
-	echo -e "db-1，yum 安装 centos7 默认的 mariadb 数据库......"
-	yum install mariadb-server -y
-
-	echo -e "db-2，启动数据库，并配置开机自动启动......"
-	systemctl enable --now mariadb
-
-	echo -e "db-3，初始化 mariadb 并配置 root 密码......"
-	mysql_secure_installation
-}
-
-
-Create_Zabbix_DB(){
-	Mysql_Cli="mysql -h${DBServer_Host_Zabbix} -u${DBServer_User_Zabbix} -p${DBServer_Paaswd_Zabbix} -P${DBServer_Port_Zabbix} -sN -e"
-
-	${Mysql_Cli} "create database zabbix character set utf8 collate utf8_bin;"
-	${Mysql_Cli} "create user 'zabbix'@'%' identified by 'password';"
-	${Mysql_Cli} "grant all privileges on zabbix.* to 'zabbix'@'%';"
-	zcat /usr/share/doc/zabbix-server-mysql*/create.sql.gz | mysql -uzabbix -p zabbix
-
-
-}
-
-
-
-
-
-
-create database zabbix character set utf8 collate utf8_bin;
-create user zabbix@localhost identified by 'password';
-grant all privileges on zabbix.* to zabbix@localhost;
-quit;
-使用以下命令导入 zabbix 数据库，zabbix 数据库用户为 zabbix，密码为 password
-
-zcat /usr/share/doc/zabbix-server-mysql*/create.sql.gz | mysql -uzabbix -p zabbix
-修改 zabbix server 配置文件vi /etc/zabbix/zabbix_server.conf 里的数据库密码
-
-DBPassword=password
-修改 zabbix 的 php 配置文件vi /etc/opt/rh/rh-php72/php-fpm.d/zabbix.conf 里的时区，改成 Asia/Shanghai
-
-php_value[date.timezone] = Asia/Shanghai
-启动相关服务，并配置开机自动启动
-
-systemctl restart zabbix-server zabbix-agent httpd rh-php72-php-fpm
-systemctl enable zabbix-server zabbix-agent httpd rh-php72-php-fpm
-使用浏览器访问http://ip/zabbix 即可访问 zabbix 的 web 页面#!/usr/bin/env bash
-
-# docker 安装 Zabbix Server
-Docker_Install_Aliyun(){
-	echo "1、docker所依赖的包环境" && yum install -y yum-utils device-mapper-persistent-data lvm2
-	echo "2、Docker-ce 阿里源镜像" && yum-config-manager --add-repo http://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo
-	echo "3、更新一下yum软件包" && yum makecache fast
-	echo "4、安装docke-ce(默认安装最新版)" && yum -y install docker-ce
-	echo "5、启动docker并设置开机启动" && systemctl enable --now docker.service
-	echo "6、添加阿里云docker镜像加速" && echo '{ "registry-mirrors": ["https://l3rxe7k8.mirror.aliyuncs.com"] }' > /etc/docker/daemon.json
-	echo "7、查看docker版本" && docker version
-}
-
-Docker_Install_Zabbix_Server(){
+Zabbix_Server_Install_Docker(){
 	echo "1、安装Docker-MySQL-5.7......"
 	docker run --name mysql-server -t \
 	-e MYSQL_DATABASE="zabbix" \
@@ -124,8 +79,59 @@ Docker_Install_Zabbix_Server(){
 	echo "5、安装完成！
 	浏览器输入：http://“宿主服务器IP地址”/ ，即可登录Zabbix，用户名密码：Admin / zabbix
 	"
+}
+
+# yum 安装默认的mariadb
+MariaDB_Install_Yum(){
+	echo -e "db-1，yum 安装 centos7 默认的 mariadb 数据库......"
+	yum install mariadb-server -y
+
+	echo -e "db-2，启动数据库，并配置开机自动启动......"
+	systemctl enable --now mariadb
+
+	echo -e "db-3，初始化 mariadb 并配置 root 密码......"
+	mysql_secure_installation
+}
+
+# Zabbix Server数据库新建库
+Zabbix_DB_Create(){
+
+	Mysql_Cli="mysql -h${DBServer_Host_Zabbix} -u${DBServer_User_Zabbix} -p${DBServer_Paaswd_Zabbix} -P${DBServer_Port_Zabbix} -sN -e"
+	${Mysql_Cli} "create database zabbix character set utf8 collate utf8_bin;"
+	${Mysql_Cli} "create user 'zabbix'@'%' identified by 'password';"
+	${Mysql_Cli} "grant all privileges on zabbix.* to 'zabbix'@'%';"
+	zcat /usr/share/doc/zabbix-server-mysql*/create.sql.gz | mysql -uzabbix -p zabbix
+
 
 }
+
+
+
+
+
+
+create database zabbix character set utf8 collate utf8_bin;
+create user zabbix@localhost identified by 'password';
+grant all privileges on zabbix.* to zabbix@localhost;
+quit;
+使用以下命令导入 zabbix 数据库，zabbix 数据库用户为 zabbix，密码为 password
+
+zcat /usr/share/doc/zabbix-server-mysql*/create.sql.gz | mysql -uzabbix -p zabbix
+修改 zabbix server 配置文件vi /etc/zabbix/zabbix_server.conf 里的数据库密码
+
+DBPassword=password
+修改 zabbix 的 php 配置文件vi /etc/opt/rh/rh-php72/php-fpm.d/zabbix.conf 里的时区，改成 Asia/Shanghai
+
+php_value[date.timezone] = Asia/Shanghai
+启动相关服务，并配置开机自动启动
+
+systemctl restart zabbix-server zabbix-agent httpd rh-php72-php-fpm
+systemctl enable zabbix-server zabbix-agent httpd rh-php72-php-fpm
+使用浏览器访问http://ip/zabbix 即可访问 zabbix 的 web 页面#!/usr/bin/env bash
+
+
+
+
 
 # 编译安装 Zabbix Server
 Compile_Install_Zabbix_Server(){
