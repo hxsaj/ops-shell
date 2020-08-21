@@ -53,10 +53,8 @@ echo -e " 欢迎使用NFS部署脚本！
     1，部署NFS Server
     2，新增分发共享目录
     off，关闭NFS Server网络文件共享服务（谨慎选择）
-    
-请选择服务（选择序列号即可）：
     "
-read -t 60 Choose_Nfs_Service
+read -t 60 -p "请选择服务（选择序列号即可）：" Choose_Nfs_Service
 
 
 case ${Choose_Nfs_Service} in
