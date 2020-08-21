@@ -67,7 +67,7 @@ case ${Choices_Server} in
     "1" ) ssh root@140.143.5.204 ;;
 
     # 用户输入目标服务器ip登录
-	"n" ) Input_ServerIP         ;;
+	  "n" ) Input_ServerIP         ;;
 
     # 输入不规范提示并退出
 	* ) echo "输入有误，请重新执行！" &&exit                   ;;
