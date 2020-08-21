@@ -19,20 +19,23 @@ Nfs_Install_Yum(){
 	[[ `systemctl status iptables |grep Active|awk '{print$2}'`="active" ]] && systemctl stop iptables  >/dev/null
 	echo -e "**********防火墙已关闭************\n"
 
-	#第二步：确认软件是否安装
+	# 第二步：确认软件是否安装
 	[[ `rpm -aq rpcbind |wc -l` -gt 0 ]] &&echo "4，rpcbind软件已安装" 
 	[[ `rpm -aq rpcbind |wc -l` -gt 0 ]] ||(echo -e "4，正在安装rpcbind软件.......\n"&& yum install rpcbind -y >/dev/null  && echo -e "**********rpcbind软件已安装**********\n" )
 	[[ `rpm -aq nfs-utils |wc -l` -gt 0 ]] &&echo "5，nfs软件已安装"
 	[[ `rpm -aq nfs-utils |wc -l` -gt 0 ]] ||(echo -e "5，正在安装nfs软件......\n" && yum install nfs-utils -y >/dev/null && echo -e "**********nfs软件已安装**********\n" )
 
-	#第三步：启动服务开机自启动
+	# 第三步：启动服务开机自启动
 	systemctl restart rpcbind.service nfs.service
 	systemctl enable nfs
 	echo "nfs共享服务已搭建完成，欢迎使用！"
 }
 
 Nfs_Publication_Service(){
-	#第三步:创建和发布共享目录
+	# 判断nfs服务是否正常运行
+	([[ `ps -ef |grep nfs|grep -v grep |wc -l` -gt 0 ]] && [[ `ps -ef |grep rpcbind|grep -v grep |wc -l` -gt 0 ]]) ||systemctl start nfs rpcbind
+
+	# 创建和发布共享目录
 	read -p "请输入需要共享的目录：" Exportfs_Dir
 	mkdir ${Exportfs_Dir} -p >/dev/null && chmod 1777 ${Exportfs_Dir}
 	read -p "请输入需要共享的网段（如果全网可访问，请输入*）：" Exportfs_Net
