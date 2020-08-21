@@ -32,8 +32,7 @@ Nfs_Install_Yum(){
 }
 
 Nfs_Publication_Service(){
-	# 判断nfs服务是否正常运行
-	([[ `ps -ef |grep nfs|grep -v grep |wc -l` -gt 0 ]] && [[ `ps -ef |grep rpcbind|grep -v grep |wc -l` -gt 0 ]]) ||echo -e "有问题##################################"
+	# 如果没有启动，则启动
 	systemctl start nfs rpcbind
 
 	# 创建和发布共享目录
