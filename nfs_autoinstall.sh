@@ -37,7 +37,7 @@ Nfs_Publication_Service(){
 	mkdir ${Exportfs_Dir} -p >/dev/null && chmod 1777 ${Exportfs_Dir}
 	read -p "请输入需要共享的网段（如果全网可访问，请输入*）：" Exportfs_Net
 	cat >> /etc/exports << END
-	${Exportfs_Dir}  ${Net}(rw,async,all_squash,insecure,async,wdelay)
+	${Exportfs_Dir}  ${Exportfs_Net}(rw,async,all_squash,insecure,async,wdelay)
 END
 	exportfs -rv
 }
