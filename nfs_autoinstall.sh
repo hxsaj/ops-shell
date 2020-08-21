@@ -34,7 +34,7 @@ Nfs_Install_Yum(){
 Nfs_Publication_Service(){
 	#第三步:创建和发布共享目录
 	read -p "请输入需要共享的目录：" Exportfs_Dir
-	mkdir $Dir -p >/dev/null && chmod 1777 ${Exportfs_Dir}
+	mkdir ${Exportfs_Dir} -p >/dev/null && chmod 1777 ${Exportfs_Dir}
 	read -p "请输入需要共享的网段（如果全网可访问，请输入*）：" Exportfs_Net
 	cat >> /etc/exports << END
 	${Exportfs_Dir}  ${Net}(rw,async,all_squash,insecure,async,wdelay)
@@ -55,8 +55,6 @@ echo -e " 欢迎使用NFS部署脚本！
     off，关闭NFS Server网络文件共享服务（谨慎选择）
     "
 read -t 60 -p "请选择服务（选择序列号即可）：" Choose_Nfs_Service
-
-
 case ${Choose_Nfs_Service} in
     # 部署NFS Server
     "1" ) [[ `ps -ef |grep nfs|grep -v grep |wc -l` -gt 0 ]] && echo -e "NFS Server已经在运行，请检查！！！" || Nfs_Install_Yum  ;;
