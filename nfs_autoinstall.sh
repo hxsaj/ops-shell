@@ -33,14 +33,15 @@ Nfs_Install_Yum(){
 
 Nfs_Publication_Service(){
 	# 判断nfs服务是否正常运行
-	([[ `ps -ef |grep nfs|grep -v grep |wc -l` -gt 0 ]] && [[ `ps -ef |grep rpcbind|grep -v grep |wc -l` -gt 0 ]]) ||systemctl start nfs rpcbind
+	([[ `ps -ef |grep nfs|grep -v grep |wc -l` -gt 0 ]] && [[ `ps -ef |grep rpcbind|grep -v grep |wc -l` -gt 0 ]]) ||echo -e "有问题##################################"
+	systemctl start nfs rpcbind
 
 	# 创建和发布共享目录
 	read -p "请输入需要共享的目录：" Exportfs_Dir
 	mkdir ${Exportfs_Dir} -p >/dev/null && chmod 1777 ${Exportfs_Dir}
 	read -p "请输入需要共享的网段（如果全网可访问，请输入*）：" Exportfs_Net
 	cat >> /etc/exports << END
-	${Exportfs_Dir}  ${Exportfs_Net}(rw,async,all_squash,insecure,async,wdelay)
+${Exportfs_Dir}  ${Exportfs_Net}(rw,async,all_squash,insecure,async,wdelay)
 END
 	exportfs -rv
 }
