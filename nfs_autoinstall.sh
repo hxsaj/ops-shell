@@ -71,6 +71,3 @@ case ${Choose_Nfs_Service} in
     # 输入不规范提示并退出
 	* ) echo "输入有误，请重新执行！" &&exit   ;;
 esac
-
-
-
