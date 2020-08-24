@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 
-#name: nfs_autoinstall.sh
+#name: nfs_autoinstall.sh for redhat7 or centos7
 #path:
-#update:2019-04-24
+#update:2020-08-24
 
 # color 
 
-Color_SOD01="\033[31;40m"
+Color_SOD01="\033[31m"
 Color_EOF01="\033[0m"
 
 Nfs_Install_Yum(){
@@ -61,7 +61,7 @@ Nfs_Server_off(){
 echo -e "${Color_SOD01} \n 欢迎使用NFS部署脚本！
     1，  部署NFS Server
     2，  新增分发共享目录
-    off，关闭NFS Server网络文件共享服务（谨慎选择）
+    off，关闭NFS Server网络文件共享服务
     ${Color_EOF01}"
 read -t 60 -p "请选择服务（选择序列号即可）：" Choose_Nfs_Service
 case ${Choose_Nfs_Service} in
