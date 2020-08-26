@@ -37,7 +37,7 @@ read -p "nginx的 日志文件 存放目录(请设定一个新目录，例如：
 docker run -p 80:80 --name nginx -d nginx:${Nginx_Version} 
 
 # 从容器中取出原始配置文件
-docker cp nginx:/etc/nginx ${Nginx_Conf_Dir} &&mv ${Nginx_Conf_Dir}/nginx/* ${Nginx_Conf_Dir}
+docker cp nginx:/etc/nginx ${Nginx_Conf_Dir} &&mv ${Nginx_Conf_Dir}/nginx/* ${Nginx_Conf_Dir} &&rm {Nginx_Conf_Dir}/nginx -rf
 
 # 关闭临时容器，并删除容器
 docker stop nginx &&docker rm nginx
@@ -46,7 +46,7 @@ docker stop nginx &&docker rm nginx
 docker run -p 80:80 --name nginx \
 -v ${Nginx_Conf_Dir}:/etc/nginx \
 -v ${Nginx_Logs_Dir}:/var/log/nginx \
--v  ${Nginx_Html_Dir}:/usr/share/nginx/html
+-v  ${Nginx_Html_Dir}:/usr/share/nginx/html \
 -d nginx:${Nginx_Version}
 
 # 打印容器运行状态
