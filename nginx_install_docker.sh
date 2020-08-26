@@ -63,5 +63,5 @@ nginx配置文件存放路径：${Nginx_Conf_Dir}
 nginx网站文件存放路径：${Nginx_Html_Dir}
 nginx日志文件存放路径：${Nginx_Logs_Dir}
 
-注意：修改 nginx配置 需要重启容器（命令：docker restart 容器名）
+注意：修改 nginx配置 需要进入容器执行nginx -s reload（进入命令：docker exec -it 容器名 /bin/bash）
 "
