@@ -22,7 +22,7 @@ function List_Open_port() {
 
 
 # 拉取最新nginx版本docker
-docker pull nginx 
+docker pull nginx
 
 # 获取最新版本的版本号
 Nginx_Version=$(docker inspect --format '{{ index (index .Config.Env) 1 }}' nginx |awk -F "=" '{print$2}')
@@ -39,7 +39,7 @@ read -p "nginx的 网站文件 存放目录(请设定一个新目录，例如：
 read -p "nginx的 日志文件 存放目录(请设定一个新目录，例如：/app/nginx/logs)：" Nginx_Logs_Dir &&mkdir -p ${Nginx_Logs_Dir}
 
 # 临时运行nginx
-docker run -p 80:80 --name nginx -d nginx:${Nginx_Version} 
+docker run -p 80:80 --name nginx -d nginx:${Nginx_Version}
 
 # 从容器中取出原始配置文件
 docker cp nginx:/etc/nginx ${Nginx_Conf_Dir} &&mv ${Nginx_Conf_Dir}/nginx/* ${Nginx_Conf_Dir}
@@ -59,9 +59,10 @@ docker ps -a
 
 # 打印部署消息
 echo -e "
-nginx配置文件存放路径：${Nginx_Conf_Dir} 
+nginx配置文件存放路径：${Nginx_Conf_Dir}
 nginx网站文件存放路径：${Nginx_Html_Dir}
 nginx日志文件存放路径：${Nginx_Logs_Dir}
 
 注意：修改 nginx配置 需要进入容器执行nginx -s reload（进入命令：docker exec -it 容器名 /bin/bash）
 "
+
