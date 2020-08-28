@@ -81,13 +81,10 @@ Docker_Install_without_Network(){
 		containerd.io
 		docker-ce
 		)
-	AS=($(for i in  ${Soft_For_Docker[@]}; do ls -lh ${Rpm_Dir}/|grep $i |awk '{print$9}' ; done))
-	rpm -ivh ${AS[@]}
+	#AS=($(for i in  ${Soft_For_Docker[@]}; do ls -lh ${Rpm_Dir}/|grep $i |awk '{print$9}' ; done))
+	#rpm -ivh ${AS[@]}
+	rpm -ivh ${Rpm_Dir}/$(for i in  ${Soft_For_Docker[@]}; do ls -lh ${Rpm_Dir}/|grep $i |awk '{print$9}' ; done)
 
-	#for i in ${Soft_For_Docker[@]}
-	#do
-	#	rpm -ivh ${Rpm_Dir}/${i}*
-	#done
 }
 
 # ---------------------------------------------------------------#
