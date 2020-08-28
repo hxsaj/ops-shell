@@ -6,7 +6,17 @@ Rpm_Dir=/root/work/baidu_docker_rpm
 # docker安装包下载（有网环境下的安装包下载）
 Docker_Init_Base_Network(){
 	# 1.1、卸载旧版本（如果是新机器可以忽略这一步，centos默认不自带docker服务）
-	yum remove docker docker-client docker-client-latest docker-common docker-latest docker-latest-logrotate  docker-logrotate docker-selinux docker-engine-selinux docker-
+	yum remove \
+	docker \
+	docker-client \
+	docker-client-latest \
+	docker-common \
+	docker-latest \
+	docker-latest-logrotate  \
+	docker-logrotate \
+	docker-selinux \
+	docker-engine-selinux \
+	docker-engine
 
 	# 1.2、安装依赖包
 	yum install -y yum-utils device-mapper-persistent-data lvm2
