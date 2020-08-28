@@ -54,6 +54,7 @@ Docker_Download_Network(){
 	yum reinstall ${Soft_For_Docker[@]} --downloadonly --downloaddir=${Rpm_Dir} > /dev/null 2>&1
 	
 	echo -e "\n Docker-ce所需软件下载完成！\n"
+}
 
 Docker_Install_with_Network(){
 	# 有网环境下docker-ce安装（最新版本docker-ce）
