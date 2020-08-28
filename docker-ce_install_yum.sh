@@ -16,7 +16,8 @@ Docker_Init_Base_Network(){
 	docker-logrotate \
 	docker-selinux \
 	docker-engine-selinux \
-	docker-engine
+	docker-engine \
+	> /dev/null 2>&1
 
 	# 1.2、安装依赖包
 	yum install -y yum-utils device-mapper-persistent-data lvm2
@@ -85,29 +86,6 @@ Docker_Install_without_Network(){
 		rpm -ivh ${Rpm_Dir}/${i}*
 	done
 }
-
-
-
-# 无外网环境下安装
-# yum install yum-utils --downloadonly --downloaddir=/root/dockerrpm/
-# yum install device-mapper-persistent-data --downloadonly --downloaddir=/root/dockerrpm/
-# yum install lvm2 --downloadonly --downloaddir=/root/dockerrpm/
-# yum install policycoreutils-python --downloadonly --downloaddir=/root/dockerrpm/
-# yum install docker-ce-18.06.1.ce --downloadonly --downloaddir=/root/dockerrpm/
-
-# ypm -ivh audit-libs-2.8.1-3.el7_5.1.x86_64.rpm
-# ypm -ivh audit-2.8.1-3.el7_5.1.x86_64.rpm
-# ypm -ivh audit-libs-python-2.8.1-3.el7_5.1.x86_64.rpm
-# ypm -ivh checkpolicy-2.5-6.el7.x86_64.rpm
-# ypm -ivh libcgroup-0.41-15.el7.x86_64.rpm
-# ypm -ivh libsemanage-python-2.5-11.el7.x86_64.rpm
-# ypm -ivh python-IPy-0.75-6.el7.noarch.rpm
-# ypm -ivh setools-libs-3.3.8-2.el7.x86_64.rpm
-# ypm -ivh policycoreutils-python-2.5-22.el7.x86_64.rpm
-# ypm -ivh container-selinux-2.68-1.el7.noarch.rpm
-# ypm -ivh libtool-ltdl-2.4.2-22.el7_3.x86_64.rpm
-# ypm -ivh docker-ce-18.06.1.ce-3.el7.x86_64.rpm
-
 
 # ---------------------------------------------------------------#
 
