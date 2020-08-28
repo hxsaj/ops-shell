@@ -35,6 +35,7 @@ Docker_Download_Network(){
 		policycoreutils-python
 		container-selinux
 		libtool-ltdl
+		containerd.io
 		docker-ce
 		)
 	for i in ${Soft_For_Docker[@]}
@@ -66,6 +67,7 @@ Docker_Install_without_Network(){
 		policycoreutils-python
 		container-selinux
 		libtool-ltdl
+		containerd.io
 		docker-ce
 		)
 	for i in ${Soft_For_Docker[@]}
