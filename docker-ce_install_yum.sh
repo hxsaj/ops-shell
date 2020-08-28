@@ -49,11 +49,16 @@ Docker_Download_Network(){
 		containerd.io
 		docker-ce
 		)
-	for i in ${Soft_For_Docker[@]}
-	do
-		yum install ${i} --downloadonly --downloaddir=${Rpm_Dir}
-		yum reinstall ${i} --downloadonly --downloaddir=${Rpm_Dir}
-	done
+
+	yum install ${Soft_For_Docker[@]} --downloadonly --downloaddir=${Rpm_Dir} > /dev/null 2>&1
+	yum reinstall ${Soft_For_Docker[@]} --downloadonly --downloaddir=${Rpm_Dir} > /dev/null 2>&1
+	
+	echo -e "Docker-ce所需软件下载完成！"
+	#for i in ${Soft_For_Docker[@]}
+	#do
+	#	yum install ${i} --downloadonly --downloaddir=${Rpm_Dir}
+	#	yum reinstall ${i} --downloadonly --downloaddir=${Rpm_Dir}
+	#done
 }
 
 Docker_Install_with_Network(){
