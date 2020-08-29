@@ -80,12 +80,11 @@ Docker_Install_without_Network(){
 		container-selinux
 		libtool-ltdl
 		containerd.io
-		docker-ce-cli
 		docker-ce
 		)
 	for i in ${Soft_For_Docker[@]}
 	do
-		rpm -ivh ${Rpm_Dir}/${i}*
+		rpm -ivh ${Rpm_Dir}/${i}*  –nodeps
 	done
 
 	#for i in $(for Soft in  ${Soft_For_Docker[@]}; do ls -lh ${Rpm_Dir}/|grep ${Soft} |awk '{print$9}' ; done)
