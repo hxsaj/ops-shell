@@ -53,7 +53,8 @@ Docker_Download_Network(){
 	yum install ${Soft_For_Docker[@]} --downloadonly --downloaddir=${Rpm_Dir} > /dev/null 2>&1
 	yum reinstall ${Soft_For_Docker[@]} --downloadonly --downloaddir=${Rpm_Dir} > /dev/null 2>&1
 	
-	echo -e "\n Docker-ce所需软件下载完成！\n"
+	echo -e "\n Docker-ce所需软件下载完成！\n软件清单：" && ls -lh ${Rpm_Dir}
+
 }
 
 Docker_Install_with_Network(){
@@ -84,7 +85,7 @@ Docker_Install_without_Network(){
 		)
 	for i in ${Soft_For_Docker[@]}
 	do
-		rpm -ivh ${i}*
+		rpm -ivh ${Rpm_Dir}/${i}*
 	done
 
 	#for i in $(for Soft in  ${Soft_For_Docker[@]}; do ls -lh ${Rpm_Dir}/|grep ${Soft} |awk '{print$9}' ; done)
