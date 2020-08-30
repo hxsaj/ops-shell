@@ -3,13 +3,13 @@
 
 # docker 安装（阿里源）
 Docker-ce_Install_Aliyun(){
-	echo "1、docker所依赖的包环境" && yum install -y yum-utils device-mapper-persistent-data lvm2
-	echo "2、Docker-ce 阿里源镜像" && yum-config-manager --add-repo http://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo
-	echo "3、更新一下yum软件包" && yum makecache fast
+	echo "1、docker所依赖的包环境"         && yum install -y yum-utils device-mapper-persistent-data lvm2
+	echo "2、Docker-ce 阿里源镜像"        && yum-config-manager --add-repo http://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo
+	echo "3、更新一下yum软件包"            && yum makecache fast
 	echo "4、安装docke-ce(默认安装最新版)" && yum -y install docker-ce
-	echo "5、启动docker并设置开机启动" && systemctl enable --now docker.service
-	echo "6、添加阿里云docker镜像加速" && echo '{ "registry-mirrors": ["https://l3rxe7k8.mirror.aliyuncs.com"] }' > /etc/docker/daemon.json
-	echo "7、查看docker版本" && docker version
+	echo "5、启动docker并设置开机启动"     && systemctl enable --now docker.service
+	echo "6、添加阿里云docker镜像加速"     && echo '{ "registry-mirrors": ["https://l3rxe7k8.mirror.aliyuncs.com"] }' > /etc/docker/daemon.json
+	echo "7、查看docker版本"              && docker version
 }
 
 # yum 安装 Zabbix Server
@@ -104,11 +104,6 @@ Zabbix_DB_Create(){
 
 
 }
-
-
-
-
-
 
 create database zabbix character set utf8 collate utf8_bin;
 create user zabbix@localhost identified by 'password';

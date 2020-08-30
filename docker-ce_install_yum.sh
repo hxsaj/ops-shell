@@ -87,11 +87,6 @@ Docker_Install_without_Network(){
 		rpm -ih ${Rpm_Dir}/${i}*  --nodeps > /dev/null 2>&1
 	done
 
-	#for i in $(for Soft in  ${Soft_For_Docker[@]}; do ls -lh ${Rpm_Dir}/|grep ${Soft} |awk '{print$9}' ; done)
-	#do
-	#	rpm -ivh ${Rpm_Dir}/${i}
-	#done
-
 }
 
 # ---------------------------------------------------------------#

@@ -1,0 +1,140 @@
+#!/usr/bin/env bash
+#########################################################
+# Function :install zookeeper                           #
+# Platform :All Linux Based Platform                    #
+# Version  :1.0                                         #
+# Date     :2020-08-28                                  #
+# Author   :mugoLH                                      #
+# Contact  :hxsaj@126.com                               #
+# Company  :                                            #
+#########################################################
+set -e
+
+# 0.0 准备开始
+echo -e "开始部署zookeeper......"
+
+# 0.1 如果需要联网下载，需要将以下命令行解开
+# wget https://downloads.apache.org/zookeeper/zookeeper-3.6.1/apache-zookeeper-3.6.1-bin.tar.gz
+
+# 1.1 创建应用目录
+read -t 120 -p "请设定Zookeeper部署位置（建议部署到/usr/local/zookeeper，或指定独立/app/zookeeper/app： " Zookeeper_App_Dir
+mkdir -p ${Zookeeper_App_Dir}
+
+# 1.2 解压到指定目录
+tar -zvxf ./apache-zookeeper-3.6.1-bin.tar.gz -C ${Zookeeper_App_Dir}
+# 1.3 配置环境变量，修改环境变量文件
+echo -e "
+export ZOOKEEPER_HOME=${Zookeeper_App_Dir}
+export PATH=${ZOOKEEPER_HOME}/bin:$PATH
+" >> /etc/profile
+
+# 1.4 使环境变量生效
+source /etc/profile
+
+# 2.1 创建数据目录
+read -t 120 -p "请设定Zookeeper数据和日志位置（建议设定为/app/zookeeper和/app/zookeeper： " Zookeeper_Data-logs_Dir
+mkdir ${Zookeeper_Data-logs_Dir}/{data,logs}
+mv ${ZOOKEEPER_HOME}/conf/zoo_sample.cfg ${ZOOKEEPER_HOME}/conf/zoo_sample.cfg.bak
+
+# 2.2 设定单机还是集群
+echo -e "\n
+1，部署单机版
+2，部署集群版（默认3节点，若需要跟多，请自行修改zookeeper配置文件zoo.cfg设定）\n
+"
+read -t 120 -p "请选择(输入序号即可)： " Zookeeper_Deploy_Model
+
+if [[ ${Zookeeper_Deploy_Model} = 1 ]];then
+	# 单机配置设置
+	echo -e "
+tickTime=2000
+initLimit=10
+syncLimit=5
+dataDir=${Zookeeper_Data-logs_Dir}/data
+dataLogDir=${Zookeeper_Data-logs_Dir}/logs
+clientPort=2181
+" >>${ZOOKEEPER_HOME}/conf/zoo.cfg
+
+else
+	# 集群配置设置
+	read -t 120 -p "请输入第1 节点IP：" Zookeeper_Node_IP_1
+	read -t 120 -p "请输入第2 节点IP：" Zookeeper_Node_IP_2
+	read -t 120 -p "请输入第3 节点IP：" Zookeeper_Node_IP_3
+	echo -e "
+tickTime=2000
+initLimit=10
+syncLimit=5
+dataDir=${Zookeeper_Data-logs_Dir}/data
+dataLogDir=${Zookeeper_Data-logs_Dir}/logs
+clientPort=2181
+server.1=${Zookeeper_Node_IP_1}:2888:3888
+server.2=${Zookeeper_Node_IP_2}:2888:3888
+server.3=${Zookeeper_Node_IP_3}:2888:3888
+" >>${ZOOKEEPER_HOME}/conf/zoo.cfg
+fi
+
+# 2.3 防火墙配置-开放端口
+firewall-cmd --add-port=2181/tcp --add-port=2888/tcp --add-port=3888/tcp --permanent
+
+# 2.4 重新加载防火墙配置
+firewall-cmd --reload
+
+# 3.1 同步到其他节点-安转rsync同步软甲，生成相关目录
+for Zookeeper_Node in ${Zookeeper_Node_IP_2} ${Zookeeper_Node_IP_3};do
+	ssh root@${Zookeeper_Node} "yum -y install rsync ;mkdir -p ${Zookeeper_App_Dir} && mkdir ${Zookeeper_Data-logs_Dir}/{data,logs}"
+done
+
+# 3.2 同步软件到节点
+rsync -avz ${Zookeeper_App_Dir}/* root@${Zookeeper_Node}/${Zookeeper_App_Dir}
+
+# 3.3 设置节点PID
+echo "1" > ${Zookeeper_Data-logs_Dir}/data/myid
+ssh root@${Zookeeper_Node_IP_2} "echo '2' > ${Zookeeper_Data-logs_Dir}/data/myid"
+ssh root@${Zookeeper_Node_IP_3} "echo '3' > ${Zookeeper_Data-logs_Dir}/data/myid"
+
+# 4.1 启动ZooKeeper
+#进入ZooKeeper bin目录
+cd ${ZOOKEEPER_HOME}/bin && sh zkServer.sh start
+ssh root@${Zookeeper_Node_IP_2} "cd ${ZOOKEEPER_HOME}/bin && sh zkServer.sh start"
+ssh root@${Zookeeper_Node_IP_3} "cd ${ZOOKEEPER_HOME}/bin && sh zkServer.sh start"
+
+# tips
+#   ZooKeeper JMX enabled by default
+#   Using config: /usr/zookeeper/zookeeper-3.4.11/bin/../conf/zoo.cfg
+#   Starting zookeeper … STARTED
+#   
+#   四、集群查看&连接测试
+#   1、查看节点状态
+#   sh $ZOOKEEPER_HOME/bin/zkServer.sh status
+#   
+#   # 状态信息
+#   ZooKeeper JMX enabled by default
+#   Using config: /usr/zookeeper/zookeeper-3.4.11/bin/../conf/zoo.cfg
+#   Mode: follower
+#   
+#   # 如果为领导者节点则Mode:leader
+#   #客户端连接测试
+#   这里随机选其中一个节点作为客户端连接其他节点即可
+#   
+#   #指定Server进行连接
+#   sh $ZOOKEEPER_HOME/bin/zkCli.sh -server 192.168.88.13:2181
+#   
+#   #正常连接后会进入ZooKeeper命令行，显示如下：
+#   [zk: 192.168.88.13:2181(CONNECTED) 0]
+#   输入命令测试：
+#   
+#   #查看ZooKeeper根
+#   [zk: 192.168.88.13:2181(CONNECTED) 0] ls /
+#   [zookeeper]
+#   五、备注
+#   1、ZooKeeper常用配置项说明
+#   配置项	名称	ken.io 的说明
+#   tickTime	CS通信心跳间隔	服务器之间或客户端与服务器之间维持心跳的时间间隔，也就是每间隔 tickTime 时间就会发送一个心跳。tickTime以毫秒为单位。
+#   initLimit	LF初始通信时限	集群中的follower服务器(F)与leader服务器(L)之间初始连接时能容忍的最多心跳数
+#   syncLimit	LF同步通信时限	集群中的follower服务器与leader服务器之间请求和应答之间能容忍的最多心跳数
+#   dataDir	数据文件目录	Zookeeper保存数据的目录，默认情况下，Zookeeper将写数据的日志文件也保存在这个目录里
+#   dataLogDir	日志文件目录	Zookeeper保存日志文件的目录
+#   clientPort	客户端连接端口	客户端连接 Zookeeper 服务器的端口，Zookeeper 会监听这个端口，接受客户端的访问请求
+#   server.N	服务器名称与地址	从N开始依次为：服务编号、服务地址、LF通信端口、选举端口；例如：server.1=192.168.88.11:2888:3888
+#   2、附录
+#   https://www.jianshu.com/p/abbc1411ed9d
+#   https://zookeeper.apache.org/doc/current/zookeeperStarted.#   
