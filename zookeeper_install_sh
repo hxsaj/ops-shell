@@ -98,12 +98,8 @@ ssh root@${Zookeeper_Node_IP_2} "cd ${ZOOKEEPER_HOME}/bin && sh zkServer.sh star
 ssh root@${Zookeeper_Node_IP_3} "cd ${ZOOKEEPER_HOME}/bin && sh zkServer.sh start"
 
 # tips
-#   ZooKeeper JMX enabled by default
-#   Using config: /usr/zookeeper/zookeeper-3.4.11/bin/../conf/zoo.cfg
-#   Starting zookeeper … STARTED
-#   
-#   四、集群查看&连接测试
-#   1、查看节点状态
+#   一、集群查看&连接测试
+#   查看节点状态
 #   sh $ZOOKEEPER_HOME/bin/zkServer.sh status
 #   
 #   # 状态信息
@@ -125,7 +121,7 @@ ssh root@${Zookeeper_Node_IP_3} "cd ${ZOOKEEPER_HOME}/bin && sh zkServer.sh star
 #   #查看ZooKeeper根
 #   [zk: 192.168.88.13:2181(CONNECTED) 0] ls /
 #   [zookeeper]
-#   五、备注
+#   二、备注
 #   1、ZooKeeper常用配置项说明
 #   配置项	名称	ken.io 的说明
 #   tickTime	CS通信心跳间隔	服务器之间或客户端与服务器之间维持心跳的时间间隔，也就是每间隔 tickTime 时间就会发送一个心跳。tickTime以毫秒为单位。
