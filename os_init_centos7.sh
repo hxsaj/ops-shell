@@ -26,12 +26,12 @@ Aliyun_Yum_Install(){
 Check_Dir_Storage(){
 	for FileDir in $1;
 	do
-		if [ -d ${FileDir} ]
+		if [ -d "${FileDir}" ]
 		then
-			echo -e "目录 `du -hs $i` $i"
-		elif [ -f ${FileDir} ]
+			echo -e "目录 `du -hs $i`"
+		elif [ -f "${FileDir}" ]
 		then
-			echo -e "文件 `du -hs $i` $i"
+			echo -e "文件 `du -hs $i`"
 		fi
 	done
 }
