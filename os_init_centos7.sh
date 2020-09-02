@@ -9,6 +9,7 @@
 # Company  :                                            #
 #########################################################
 
+# 更换阿里云镜像源
 Aliyun_Yum_Install(){
 	# 1、安装wget
 	yum install -y wget
@@ -20,3 +21,19 @@ Aliyun_Yum_Install(){
 	#3、更新镜像源
 	yum clean all && yum makecache
 }
+
+# 查看路径下文件和目录的大小
+Check_Dir_Storage(){
+	for FileDir in $1;
+	do
+		if [ -d ${FileDir} ]
+		then
+			echo -e "目录 `du -hs $i` $i"
+		elif [ -f ${FileDir} ]
+		then
+			echo -e "文件 `du -hs $i` $i"
+		fi
+	done
+}
+
+Check_Dir_Storage ./*
