@@ -28,12 +28,12 @@ Check_Dir_Storage(){
 	do
 		if [ -d "${FileDir}" ]
 		then
-			echo -e "目录 `du -hs $i`"
+			echo -e "目录 `du -hs ${FileDir}`"
 		elif [ -f "${FileDir}" ]
 		then
-			echo -e "文件 `du -hs $i`"
+			echo -e "文件 `du -hs ${FileDir}`"
 		fi
 	done
 }
 
-Check_Dir_Storage ./*
+Check_Dir_Storage 
