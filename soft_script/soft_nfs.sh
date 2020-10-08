@@ -16,20 +16,26 @@
 # [ ---- ---- 色彩函数定义
 
 #    提示
-function show_notice () {
-	# echo -e "\033[38;46m 色彩测试-提示 \033[0m"
-	echo -e "\033[38;46m $@ \033[0m" >&1
-}
+#function show_notice () {
+#	# echo -e "\033[38;46m 色彩测试-提示 \033[0m"
+#	echo -e "\033[38;46m $@ \033[0m" >&1
+#}
 #    警告
-function show_warning () {
-	# echo -e "\033[35;46m 色彩测试-警告 \033[0m"
-	echo -e "\033[35;46m $@ \033[0m" >&2
-}
+#function show_warning () {
+#	# echo -e "\033[35;46m 色彩测试-警告 \033[0m"
+#	echo -e "\033[35;46m $@ \033[0m" >&2
+#}
 #    报错
-function show_error () {
-	# echo -e "\033[1;31;46m 色彩测试-错误 \033[0m"
-	echo -e "\033[1;31;46m $@ \033[0m" >&2
-}
+#function show_error () {
+#	# echo -e "\033[1;31;46m 色彩测试-错误 \033[0m"
+#	echo -e "\033[1;31;46m $@ \033[0m" >&2
+#}
+
+#  导入子函数脚本列表 Import the list of subfunction scripts
+########## ########## ########## ########## ########## ########## #
+
+# 导入 回显信息的颜色配置 函数
+. ../int/int_color_information.sh        # 导入 回显信息的颜色配置 函数                show_notice show_warning show_error
 
 Nfs_Install_Yum(){
 	# 准备阶段：测试网络，关闭selinux和防火墙阶段
